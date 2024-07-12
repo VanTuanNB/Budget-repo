@@ -1,0 +1,12 @@
+<div class="wrapper-inline-editor">
+    <ng-container *ngIf="isReadOnly; else editableBlock">
+        <span>{{value}}</span>
+    </ng-container>
+    <ng-template #editableBlock>
+        <ng-container *ngIf="!isFocusing">
+            <div style="cursor: pointer;" (click)="onFocusInput($event)">{{value}}</div>
+        </ng-container>
+        <input *ngIf="isFocusing" nz-input placeholder="Basic usage" [(ngModel)]="value" type="text"
+            (blur)="onBlurInput($event)" (keyup.enter)="onBlurInput($event)" />
+    </ng-template>
+</div>

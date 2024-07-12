@@ -1,0 +1,30 @@
+.container {
+    width: 100%;
+
+    .header {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+
+        .filter-box {
+            margin: 20px 20px 0 0;
+        }
+    }
+
+    .body {
+        .wrapper-td-full-width {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+    }
+}
+
+::ng-deep {
+    .btn-apply-all {
+        padding: 4px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+}

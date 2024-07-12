@@ -1,0 +1,96 @@
+<section class="container">
+    <header class="header">
+        <!-- <div class="filter-box">
+            <nz-range-picker [(ngModel)]="date" (ngModelChange)="onChange($event)" [nzMode]="'month'"></nz-range-picker>
+        </div> -->
+    </header>
+    <section class="body">
+        <nz-table #table [nzData]="budgets" [nzShowPagination]="false">
+            <thead>
+                <tr>
+                    <th nzWidth="120">Category</th>
+                    <th *ngFor="let month of months" nzWidth="100" [attr.data-index-month]="month.id">{{month.title}}
+                    </th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <ng-container *ngFor="let budget of table.data">
+                    <tr>
+                        <td [ngStyle]="{'background-color': budget.backgroundColor}" colspan="14">
+                            <div class="wrapper-td-full-width">
+                                <app-inline-editor [(ngModel)]="budget.title"></app-inline-editor>
+                                <button (click)="onCreateNewCategory(budget.id)" nz-button nzType="primary"
+                                    nzShape="circle">
+                                    <span style="font-size: 2rem; line-height: 1.9rem;">+</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <ng-container *ngFor="let category of budget.categories">
+                        <tr [ngStyle]="{'background-color': budget.backgroundColor, opacity: '0.6'}">
+                            <td [style.background-color]="budget.backgroundColor + ' !important'" colspan="14">
+                                <app-inline-editor [(ngModel)]="category.title"></app-inline-editor>
+                            </td>
+                        </tr>
+                        <tr *ngFor="let subCategory of category.subCategories">
+                            <td>
+                                <app-inline-editor [(ngModel)]="subCategory.title"
+                                    [isReadOnly]="subCategory.isReadOnly"></app-inline-editor>
+                            </td>
+                            <td *ngFor="let month of subCategory.monthValues; index as i ;trackBy: trackByFn">
+                                <ng-container *ngIf="subCategory.isReadOnly; else editable">
+                                    {{month}}
+                                </ng-container>
+                                <ng-template #editable>
+                                    <div>
+
+                                    </div>
+                                    <nz-input-number [appCustomContextMenu]="contextMenu"
+                                        [paramsContextMenu]="{indexCol: i,budgetId: budget.id, categoryId: category.id, subCategoryId: subCategory.id}"
+                                        [attr.data-budget-id]="budget.id" [attr.data-parent-category-id]="category.id"
+                                        [attr.data-sub-category-id]="subCategory.id"
+                                        [(ngModel)]="subCategory.monthValues[i]" nzPlaceHolder="0"
+                                        (ngModelChange)="onInputChange(budget.id,category.id, i)"
+                                        (keydown.enter)="onEnterInputEvent($event)">
+                                    </nz-input-number>
+                                </ng-template>
+
+                            </td>
+                            <td *ngIf="!subCategory.isReadOnly">
+                                <span (click)="onDeleteRow(budget.id, category.id, subCategory.id)"
+                                    style="color: red; cursor: pointer; font-size: 1.8rem;" nz-icon nzType="delete"
+                                    nzTheme="outline"></span>
+                            </td>
+                        </tr>
+                    </ng-container>
+                    <tr>
+                        <td><b>Total:</b></td>
+                        <td *ngFor="let total of budget.total">{{total}}</td>
+                    </tr>
+                </ng-container>
+                <tr>
+                    <td [ngStyle]="{'background-color': '#e6e6e6'}" colspan="14">Summary</td>
+                </tr>
+                <tr>
+                    <td>Profit / Loss</td>
+                    <td *ngFor="let profitOrLoss of summary.profitOrLoss">{{profitOrLoss}}</td>
+                </tr>
+                <tr>
+                    <td>Opening Balance</td>
+                    <td *ngFor="let openingBalance of summary.openingBalance">{{openingBalance}}</td>
+                </tr>
+                <tr>
+                    <td>Closing Balance</td>
+                    <td *ngFor="let closingBalance of summary.closingBalance">{{closingBalance}}</td>
+                </tr>
+            </tbody>
+        </nz-table>
+    </section>
+</section>
+
+<ng-template #contextMenu let-data>
+    <div style="padding: 10px;">
+        <button class="btn-apply-all" (click)="onApplyToAllCol($event, data)">Apply to all</button>
+    </div>
+</ng-template>
